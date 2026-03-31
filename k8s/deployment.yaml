@@ -54,7 +54,6 @@ spec:
             periodSeconds: 10
           readinessProbe:
             tcpSocket:
-              path: /
               port: 80
             initialDelaySeconds: 15
             periodSeconds: 20
