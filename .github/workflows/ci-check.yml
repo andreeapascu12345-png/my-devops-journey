@@ -10,13 +10,9 @@ jobs:
   validate-k8s:
     runs-on: ubuntu-latest
     steps:
-      # Step 1: Checkout the repository code
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # Step 2: Run Kube-Score to analyze Kubernetes manifests
-      # We mount the local k8s directory to /project inside the container
-      # We pass 'score /project/*.yaml' directly to the kube-score binary
       - name: Run Kube-Score
         run: |
-          docker run --rm -v ${{ github.workspace }}/k8s:/project zegl/kube-score:latest score /project/*.yaml --exit-code 0
+          docker run --rm -v ${{ github.workspace }}/k8s:/project zegl/kube-score:latest sh -c "kube-score score /project/*.yaml --exit-one-on-warning"
