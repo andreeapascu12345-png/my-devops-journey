@@ -12,6 +12,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Validate Kubernetes manifests (Lint)
+      - name: Run Kube-Score
         run: |
-          docker run --rm -v ${{ github.workspace }}/k8s:/project zegl/kube-score:latest score /project/deployment.yaml /project/service.yaml /project/hpa.yaml /project/ingress.yaml
+          docker run --rm -v ${{ github.workspace }}/k8s:/project zegl/kube-score:latest sh -c "score /project/*.yaml --exit-code 0"
