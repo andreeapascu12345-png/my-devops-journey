@@ -6,12 +6,10 @@ metadata:
   labels:
     release: my-monitor
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: web-site
   ports:
     - protocol: TCP
       port: 80
       targetPort: 80
-      nodePort: 30007
-      type: ClusterIP
