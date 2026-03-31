@@ -15,4 +15,4 @@ jobs:
 
       - name: Run Kube-Score
         run: |
-          docker run --rm -v ${{ github.workspace }}/k8s:/project zegl/kube-score:latest sh -c "kube-score score /project/*.yaml --exit-one-on-warning"
+          docker run --rm -v ${{ github.workspace }}/k8s:/project zegl/kube-score:latest score /project
