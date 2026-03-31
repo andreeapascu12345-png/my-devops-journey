@@ -6,7 +6,6 @@ metadata:
   labels:
     release: my-monitor
 spec:
-  replicas: 2
   selector:
     matchLabels:
       app: web-site
@@ -17,8 +16,14 @@ spec:
     spec:
       containers:
         - name: my-web-container
-          image: my-devops-journey
-          imagePullPolicy: Never
+          image: qa367xl/my-devops-journey:v1
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
           resources:
             requests:
               memory: "64Mi"
@@ -38,5 +43,5 @@ spec:
             httpGet:
               path: /
               port: 80
-            initialDelaySeconds: 3
-            periodSeconds: 5
+            initialDelaySeconds: 15
+            periodSeconds: 10

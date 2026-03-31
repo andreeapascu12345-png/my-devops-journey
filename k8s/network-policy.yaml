@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: web-app-network-policy
+  namespace: web-app-devops
+spec:
+  podSelector:
+    matchLabels:
+      app: web-site
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector: {}
+      ports:
+        - protocol: TCP
+          port: 80
+  egress:
+    - to:
+        - podSelector: {}
