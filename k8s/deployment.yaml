@@ -53,10 +53,8 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 10
           readinessProbe:
-            httpGet:
+            tcpSocket:
               path: /
               port: 80
-            initialDelaySeconds: 30
+            initialDelaySeconds: 15
             periodSeconds: 20
-            successThreshold: 1
-            failureThreshold: 5
