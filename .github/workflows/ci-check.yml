@@ -13,6 +13,14 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Run Kube-Score
+      - name: Install and Run Kube-Score
         run: |
-          cat k8s/*.yaml | docker run --rm -i zegl/kube-score:latest score -
+          # 1. Download the latest binary for Linux
+          curl -LO https://github.com/zegl/kube-score/releases/download/v1.18.0/kube-score_1.18.0_linux_amd64.tar.gz
+
+          # 2. Extract the binary
+          tar -xzf kube-score_1.18.0_linux_amd64.tar.gz
+          chmod +x kube-score
+
+          # 3. Run it against your files
+          ./kube-score score k8s/*.yaml
