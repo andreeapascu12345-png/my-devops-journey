@@ -14,15 +14,26 @@ spec:
       labels:
         app: web-site
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - web-site
+              topologyKey: "kubernetes.io/hostname"
       containers:
         - name: my-web-container
           image: qa367xl/my-devops-journey:v1
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           securityContext:
             privileged: false
             readOnlyRootFilesystem: true
             runAsNonRoot: true
-            runAsUser: 1000
+            runAsUser: 10005
+            runAsGroup: 10005
             allowPrivilegeEscalation: false
           resources:
             requests:
@@ -39,11 +50,11 @@ spec:
             httpGet:
               path: /
               port: 80
-            initialDelaySeconds: 5
+            initialDelaySeconds: 10
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /
               port: 80
-            initialDelaySeconds: 15
-            periodSeconds: 10
+            initialDelaySeconds: 30
+            periodSeconds: 20
