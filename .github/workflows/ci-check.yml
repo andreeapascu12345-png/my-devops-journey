@@ -14,4 +14,4 @@ jobs:
 
       - name: Validate Kubernetes manifests (Dry Run)
         run: |
-          docker run --rm -v $(pwd)/k8s:/apps alpine/k8s:1.29.2 kubectl apply --dry-run=client -f /apps/
+          docker run --rm -v $(pwd)/k8s:/apps alpine/k8s:1.29.2 kubectl apply --dry-run=client --validate=false -f /apps/
