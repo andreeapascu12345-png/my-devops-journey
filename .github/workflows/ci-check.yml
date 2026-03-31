@@ -14,4 +14,4 @@ jobs:
 
       - name: Validate Kubernetes manifests (Dry Run)
         run: |
-          docker run --rm -v $(pwd)/k8s:/project zegl/kube-score:latest score /project/*.yaml
+          docker run --rm -v $(pwd)/k8s:/project zegl/kube-score:latest sh -c "score /project/*.yaml"
