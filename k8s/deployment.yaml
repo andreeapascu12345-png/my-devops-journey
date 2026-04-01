@@ -59,7 +59,6 @@ spec:
           # Liveness Probe: Checks if the container needs to be restarted
           livenessProbe:
             tcpSocket:
-              path: /
               port: 8080
             initialDelaySeconds: 20
             periodSeconds: 20
