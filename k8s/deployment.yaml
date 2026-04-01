@@ -13,21 +13,10 @@ spec:
     metadata:
       labels:
         app: web-site
-    spec:
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                  - key: app
-                    operator: In
-                    values:
-                      - web-site
-              topologyKey: "kubernetes.io/hostname"
       containers:
         - name: my-web-container
-          image: qa367xl/my-devops-journey:v1
-          imagePullPolicy: Always
+          image: my-devops-journey:v7
+          imagePullPolicy: IfNotPresent
           securityContext:
             privileged: false
             readOnlyRootFilesystem: true
@@ -45,15 +34,25 @@ spec:
               cpu: "200m"
               ephemeral-storage: "100Mi"
           ports:
-            - containerPort: 80
+            - containerPort: 8080
+          volumeMounts:
+            - name: cache-volume
+              mountPath: /var/cache/nginx
+            - name: tmp-volume
+              mountPath: /tmp
           livenessProbe:
             httpGet:
               path: /
-              port: 80
+              port: 8080
             initialDelaySeconds: 10
             periodSeconds: 10
           readinessProbe:
             tcpSocket:
-              port: 80
+              port: 8080
             initialDelaySeconds: 15
             periodSeconds: 20
+      volumes:
+        - name: cache-volume
+          emptyDir: {}
+        - name: tmp-volume
+          emptyDir: {}

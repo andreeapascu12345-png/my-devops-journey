@@ -6,10 +6,10 @@ metadata:
   labels:
     release: my-monitor
 spec:
-  type: ClusterIP
   selector:
     app: web-site
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 80
+      targetPort: 8080
+  type: ClusterIP

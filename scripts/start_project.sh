@@ -7,7 +7,7 @@ cd "$(dirname "$0")/.."
 # --- 1. Start Minikube Cluster ---
 # Ensure Docker Desktop is already running on Windows.
 echo " Starting Minikube..."
-minikube start
+minikube start --memory 4096 --cpus 2
 
 # --- 2. Apply Kubernetes Manifests ---
 # This ensures all your components (Deployment, Service, HPA, Ingress) 
