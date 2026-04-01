@@ -58,10 +58,10 @@ spec:
             - containerPort: 8080
           # Liveness Probe: Checks if the container needs to be restarted
           livenessProbe:
-            httpGet:
+            tcpSocket:
               path: /
               port: 8080
-            initialDelaySeconds: 15
+            initialDelaySeconds: 20
             periodSeconds: 20
           # Readiness Probe: Checks if the container is ready to accept traffic
           readinessProbe:
