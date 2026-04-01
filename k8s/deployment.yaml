@@ -4,8 +4,9 @@ metadata:
   name: devops-journey-deployment
   namespace: web-app-devops
   labels:
-    release: my-monitor
+    release: my-monitor # Label used to link with Prometheus/Grafana monitoring
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: web-site
@@ -13,17 +14,38 @@ spec:
     metadata:
       labels:
         app: web-site
+    spec:
+      # Fix for [WARNING] PodAntiAffinity: Ensures high availability by
+      # preferring to schedule pods on different nodes
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - web-site
+                topologyKey: "kubernetes.io/hostname"
+      # Pod-level security settings
+      securityContext:
+        runAsNonRoot: true # Prevents the container from running as root user
+        runAsUser: 10005 # Specific UID for the application user
+        runAsGroup: 10005 # Specific GID for the application group
+        seccompProfile:
+          type: RuntimeDefault # Restricts system calls for better security
       containers:
         - name: my-web-container
           image: my-devops-journey:v7
           imagePullPolicy: IfNotPresent
+          # Container-level security settings
           securityContext:
-            privileged: false
-            readOnlyRootFilesystem: true
-            runAsNonRoot: true
-            runAsUser: 10005
-            runAsGroup: 10005
-            allowPrivilegeEscalation: false
+            privileged: false # Denies container elevated host privileges
+            readOnlyRootFilesystem: true # Locks the main filesystem; requires external volumes for writes
+            allowPrivilegeEscalation: false # Prevents a process from gaining more privileges than its parent
+          # Resource management to pass [CRITICAL] Container Resources check
           resources:
             requests:
               memory: "64Mi"
@@ -35,24 +57,29 @@ spec:
               ephemeral-storage: "100Mi"
           ports:
             - containerPort: 8080
+          # Liveness Probe: Checks if the container needs to be restarted
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          # Readiness Probe: Checks if the container is ready to accept traffic
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          # Mounting temporary writable directories for Nginx
           volumeMounts:
             - name: cache-volume
               mountPath: /var/cache/nginx
             - name: tmp-volume
               mountPath: /tmp
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 8080
-            initialDelaySeconds: 10
-            periodSeconds: 10
-          readinessProbe:
-            tcpSocket:
-              port: 8080
-            initialDelaySeconds: 15
-            periodSeconds: 20
+      # Volumes required for readOnlyRootFilesystem to work with Nginx
       volumes:
         - name: cache-volume
-          emptyDir: {}
+          emptyDir: {} # Temporary storage for Nginx cache files
         - name: tmp-volume
-          emptyDir: {}
+          emptyDir: {} # Temporary storage for PID and other temp files
