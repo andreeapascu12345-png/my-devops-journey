@@ -6,7 +6,6 @@ metadata:
   labels:
     release: my-monitor # Label used to link with Prometheus/Grafana monitoring
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: web-site
@@ -39,7 +38,7 @@ spec:
       containers:
         - name: my-web-container
           image: my-devops-journey:v7
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           # Container-level security settings
           securityContext:
             privileged: false # Denies container elevated host privileges
@@ -71,6 +70,8 @@ spec:
               port: 8080
             initialDelaySeconds: 5
             periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
           # Mounting temporary writable directories for Nginx
           volumeMounts:
             - name: cache-volume
